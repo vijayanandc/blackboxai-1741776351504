@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Application</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Auth Container -->
+    <div id="authContainer" class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold text-center mb-6">Login with Phone</h2>
+            <form id="phoneForm" class="space-y-4">
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="+1234567890" 
+                           class="mt-1 block w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" id="sendCode" 
+                        class="w-full bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    Send Code
+                </button>
+            </form>
+
+            <form id="otpForm" class="hidden space-y-4 mt-4">
+                <div>
+                    <label for="otpCode" class="block text-sm font-medium text-gray-700">Enter OTP</label>
+                    <input type="text" id="otpCode" placeholder="Enter 6-digit code" 
+                           class="mt-1 block w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" id="verifyCode" 
+                        class="w-full bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                    Verify Code
+                </button>
+            </form>
+
+            <div id="recaptcha-container" class="mt-4"></div>
+        </div>
+    </div>
+
+    <!-- Todo Container (Hidden initially) -->
+    <div id="todoContainer" class="container mx-auto px-4 py-8 hidden">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Todo Application</h1>
+            <p class="text-gray-600">Manage your tasks efficiently</p>
+            <button id="logoutBtn" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                Logout
+            </button>
+        </header>
+
+        <!-- Add Todo Form -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <form id="todoForm" class="flex gap-4">
+                <input type="text" id="todoInput" placeholder="Enter your task..." 
+                       class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" 
+                        class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    Add Task
+                </button>
+            </form>
+        </div>
+
+        <!-- Todo List -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Tasks</h2>
+            <div id="todoList" class="space-y-3">
+                <!-- Todo items will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Todo Item Template -->
+    <template id="todoItemTemplate">
+        <div class="todo-item flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-3">
+                <input type="checkbox" class="todo-checkbox w-5 h-5 rounded text-blue-500">
+                <span class="todo-text text-gray-800"></span>
+            </div>
+            <button class="delete-todo text-red-500 hover:text-red-700">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </template>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
