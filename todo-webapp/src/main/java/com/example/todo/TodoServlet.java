@@ -7,11 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @WebServlet("/todo")
 public class TodoServlet extends HttpServlet {
@@ -19,13 +18,20 @@ public class TodoServlet extends HttpServlet {
     private static final Map<String, List<TodoItem>> userTodos = new ConcurrentHashMap<>();
     private static int nextId = 1;
 
-    // Helper method to get user ID from Authorization header
-    private String getUserId(HttpServletRequest request) throws ServletException {
+    @Override
+    public void init() throws ServletException {
+        // Initialize Firebase with the service account file
+        FirebaseAuthUtil.initialize(null);
+    }
+
+    // Helper method to get authenticated user ID
+    private String authenticateUser(HttpServletRequest request) throws ServletException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new ServletException("No authorization token provided");
+            throw new ServletException("Missing or invalid Authorization header");
         }
-        return authHeader.substring(7); // Remove "Bearer " prefix
+        String idToken = authHeader.substring(7);
+        return FirebaseAuthUtil.verifyIdToken(idToken);
     }
 
     // Helper method to get user's todo list
@@ -40,7 +46,7 @@ public class TodoServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         try {
-            String userId = getUserId(request);
+            String userId = authenticateUser(request);
             List<TodoItem> todos = getUserTodoList(userId);
             
             // Return all todos as JSON array
@@ -71,7 +77,7 @@ public class TodoServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         try {
-            String userId = getUserId(request);
+            String userId = authenticateUser(request);
             String description = request.getParameter("description");
             
             if (description == null || description.trim().isEmpty()) {
@@ -103,7 +109,7 @@ public class TodoServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         try {
-            String userId = getUserId(request);
+            String userId = authenticateUser(request);
             String idStr = request.getParameter("id");
             String completedStr = request.getParameter("completed");
             
@@ -155,7 +161,7 @@ public class TodoServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         try {
-            String userId = getUserId(request);
+            String userId = authenticateUser(request);
             String idStr = request.getParameter("id");
             
             if (idStr == null) {
